@@ -8,7 +8,6 @@ Includes basic filtering by 'contains string'.
 
 
 import argparse
-import sys
 from pathlib import Path
 from xml.etree import ElementTree
 
