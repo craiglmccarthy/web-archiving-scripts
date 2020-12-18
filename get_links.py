@@ -2,22 +2,17 @@
 # -*- coding: utf-8 -*-
 
 """
-A tool to scrape all links on a webpage from a given list of URLs.
-Including an option to exclude external links.
+A tool to scrape all links on a webpage from a given list of URLs from .txt file.
 """
 
 import argparse
 import getpass
 import sys
 
+import pandas as pd
 import requests
 from bs4 import BeautifulSoup
 from tqdm import tqdm
-
-# TODO 1 Get a list of URLs
-# TODO 2 Give option of authenticating
-# TODO 3 Loop through list of URLs, visit one page at a time
-# TODO 4 Scrape <a> hrefs from page - add to list
 
 
 def main():
@@ -29,14 +24,30 @@ def main():
     # Optional argument to give option to provide authentication credentials
     parser.add_argument('--authenticate', action='store_true',
                         help='gives option to provide authentication credentials')
-    # TODO Optional argument to specify whether to exclude external domain links
-    parser.add_argument('--exclude_external',
-                        help='exclude external links from final output')
+    # Optional argument to give start point of URLs to visit
+    parser.add_argument('--file_start', type=int,
+                        help='start point of URLs to visit')
+    # Optional argument to give end point of URLs to visit
+    parser.add_argument('--file_end', type=int,
+                        help='end point of URLs to visit')
     # TODO Optional save to file
     parser.add_argument('--to_file', help='file path to .txt file output')
     args = parser.parse_args()
 
+    # Read file into list
     url_list = read_file(args.url_list)
+
+    # Where to read from and to; default is entire list
+    if args.file_start:
+        start = args.file_start
+    else:
+        start = 0
+    if args.file_end:
+        end = args.file_end
+    else:
+        end = len(url_list)
+    # Change list depending on given start:end parameters
+    url_list = url_list[start:end]
 
     # Logged in session
     if args.authenticate:
@@ -47,27 +58,21 @@ def main():
         payload = {'Username': username,
                    'Password': password, }
         # Return link list from logged in session
-        link_list = session(url_list, session_login_page, payload)
+        dict_page_links = session(url_list, session_login_page, payload)
     # Regular session
     else:
         # Return link list from regular session
-        link_list = scrape_loop(url_list)
+        dict_page_links = scrape_loop(url_list)
 
-    # TODO Optional filters - ADD IF STATEMENT HERE
-    link_list = filter_list(link_list)
+    # Print dictionary
+    # for item in dict_page_links.items():
+    #     print(item)
+    #     print('\n\n')
 
-    # TODO Optional save to file
-    if args.to_file:
-        to_file(link_list, args.to_file)
-    else:
-        for i in link_list:
-            print(i)
+    df = pd.DataFrame.from_dict(dict_page_links, orient='index')
+    df.to_excel("output.xlsx")
 
     sys.exit(0)
-
-
-def filter_list(link_list):
-    return link_list
 
 
 def to_file(sitemap_urls, filename):
@@ -104,19 +109,26 @@ def session(url_list, session_login_page, payload):
         # Submit login details to login page
         res = sess.post(session_login_page, data=payload, headers=headers)
 
-        link_list = scrape_loop(url_list, sess=sess)
-        return link_list
+        dict_page_links = scrape_loop(url_list, sess=sess)
+        return dict_page_links
 
 
 def scrape_loop(url_list, sess=False):
-    """Main loop for looping through URLs in list"""
+    """Main loop for looping through URLs in list. Building dictionary of
+    pages (key) and links (values)"""
+    dict_page_links = {}
     for i in tqdm(url_list):
-        if sess == False:
-            page = requests.get(i)
-        else:
-            page = sess.get(i)
+        try:
+            if sess == False:
+                page = requests.get(i)
+            else:
+                page = sess.get(i)
+        except Exception as e:
+            print(e)
         link_list = get_links(page)
-    return link_list
+        # Update dictionary with new key:value pairs
+        dict_page_links.update({i: link_list})
+    return dict_page_links
 
 
 def get_links(page):
@@ -124,11 +136,11 @@ def get_links(page):
     link_list = []
     soup = BeautifulSoup(page.text, "html.parser")
     links = soup.findAll('a')
-    try:
-        for link in links:
+    for link in links:
+        try:
             link_list.append(link["href"])
-    except Exception as e:
-        print(e)
+        except Exception as e:
+            print(e)
     return link_list
 
 
