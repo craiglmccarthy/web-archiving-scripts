@@ -22,7 +22,7 @@ def main():
     # Optional filtering by 'contains string' argument
     parser.add_argument('--contains_string',
                         help='filter list output by \'contains string\'')
-    # Optional save to file
+    # Optional save to .txt file
     parser.add_argument('--to_file', help='file path to .txt file output')
     args = parser.parse_args()
 
