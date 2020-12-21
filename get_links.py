@@ -3,13 +3,15 @@
 
 """
 A tool to scrape all links on a webpage from a given list of URLs from .txt file.
+
+Outputs a dictionary to json, pickle or terminal.
 """
 
 import argparse
 import getpass
-import sys
+import json
+import pickle
 
-import pandas as pd
 import requests
 from bs4 import BeautifulSoup
 from tqdm import tqdm
@@ -30,8 +32,10 @@ def main():
     # Optional argument to give end point of URLs to visit
     parser.add_argument('--file_end', type=int,
                         help='end point of URLs to visit')
-    # TODO Optional save to file
-    parser.add_argument('--to_file', help='file path to .txt file output')
+    # Optional save dict to json file
+    parser.add_argument('--to_json', help='file path to .json file output')
+    # Optional save dict to pickle file
+    parser.add_argument('--to_pickle', help='file path to .pkl file output')
     args = parser.parse_args()
 
     # Read file into list
@@ -57,32 +61,28 @@ def main():
         # Add credentials to payload
         payload = {'Username': username,
                    'Password': password, }
-        # Return link list from logged in session
+        # Return link dict from logged in session
         dict_page_links = session(url_list, session_login_page, payload)
     # Regular session
     else:
-        # Return link list from regular session
+        # Return link dict from regular session
         dict_page_links = scrape_loop(url_list)
 
-    # Print dictionary
-    # for item in dict_page_links.items():
-    #     print(item)
-    #     print('\n\n')
-
-    df = pd.DataFrame.from_dict(dict_page_links, orient='index')
-    df.to_excel("output.xlsx")
-
-    sys.exit(0)
-
-
-def to_file(sitemap_urls, filename):
-    """Write URL list to file"""
-    with open(filename, 'w') as f:
-        for i in sitemap_urls:
-            if i == sitemap_urls[-1]:
-                f.write(i)
-            else:
-                f.write(i+'\n')
+    # Determine output, json, pickle, or terminal output
+    if args.to_json or args.to_pickle:
+        if args.to_json:
+            with open(args.to_json, 'w') as f:
+                json.dump(dict_page_links, f)
+        if args.to_pickle:
+            with open(args.to_pickle, 'wb') as f:
+                pickle.dump(dict_page_links, f)
+    else:
+        # Print dictionary
+        for key, value in dict_page_links.items():
+            print(key)
+            for v in value:
+                print('\t' + v)
+            print()
 
 
 def read_file(url_list):
@@ -108,7 +108,7 @@ def session(url_list, session_login_page, payload):
         payload['__RequestVerificationToken'] = tok[-1]["value"]
         # Submit login details to login page
         res = sess.post(session_login_page, data=payload, headers=headers)
-
+        # Run main scrape loop in the logged in session
         dict_page_links = scrape_loop(url_list, sess=sess)
         return dict_page_links
 
