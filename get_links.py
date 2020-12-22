@@ -2,9 +2,10 @@
 # -*- coding: utf-8 -*-
 
 """
-A tool to scrape all links on a webpage from a given list of URLs from .txt file.
+A tool to scrape all links on a webpage. List of URLs are provided via .txt 
+file.
 
-Outputs a dictionary to json, pickle or terminal.
+Outputs a Python dictionary to json, pickle or terminal.
 """
 
 import argparse
@@ -123,11 +124,11 @@ def scrape_loop(url_list, sess=False):
                 page = requests.get(i)
             else:
                 page = sess.get(i)
+            link_list = get_links(page)
+            # Update dictionary with new key:value pairs
+            dict_page_links.update({i: link_list})
         except Exception as e:
             print(e)
-        link_list = get_links(page)
-        # Update dictionary with new key:value pairs
-        dict_page_links.update({i: link_list})
     return dict_page_links
 
 
