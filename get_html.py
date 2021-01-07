@@ -5,10 +5,10 @@
 A tool which visits pages from a list of URLs and saves the HTML content to
 a Python dictionary.
 
-This dictionary of {URL:HTML content} can later be used to scrape HTML 
+This dictionary of {URL:HTML content} can later be used to inspect/scrape HTML 
 elements.
 
-Outputs to json, pickle or terminal.
+Outputs to json, pickle or terminal (default).
 """
 
 import argparse
@@ -23,19 +23,19 @@ from tqdm import tqdm
 
 def main():
     parser = argparse.ArgumentParser(
-        description='A tool which visits a list of URLs and saves the HTML content to a Python dictionary.')
+        description='A tool which visits a list of URLs and saves the HTML content to a Python dictionary. Outputs to json, pickle or terminal (default).')
     # Requires at least one list of URLs
     parser.add_argument(
-        'url_list', help='.txt file containing list of URLs to scrape')
+        'url_list', help='.txt file containing list of URLs to visit')
     # Optional argument to give option to provide authentication credentials
     parser.add_argument('--authenticate', action='store_true',
                         help='gives option to provide authentication credentials')
     # Optional argument to give start point of URLs to visit
     parser.add_argument('--file_start', type=int,
-                        help='start point of URLs to visit')
+                        help='start point of .txt file to read')
     # Optional argument to give end point of URLs to visit
     parser.add_argument('--file_end', type=int,
-                        help='end point of URLs to visit')
+                        help='end point of .txt file to read')
     # Optional save dict to json file
     parser.add_argument('--to_json', help='file path to .json file output')
     # Optional save dict to pickle file
@@ -83,7 +83,7 @@ def main():
     else:
         # Print dictionary
         for k, v in dict_page_html.items():
-            print('URL: ' + k, '\n\n' + v.strip() + '\n')
+            print('URL: ' + k, '\nHTML content:\n\n' + v.strip() + '\n')
 
 
 def read_file(url_list):

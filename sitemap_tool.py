@@ -18,8 +18,8 @@ import requests
 def main():
     parser = argparse.ArgumentParser(
         description='A simple tool to produce a plain list of URLs from an XML sitemap.')
-    # Requires at least one sitemap URL
-    parser.add_argument('sitemap_urls', nargs='+', help='sitemap input/s (XML file or URL)')
+    # Requires at least one sitemap input (XML file or URL)
+    parser.add_argument('sitemap_input', nargs='+', help='sitemap input/s (XML file or URL)')
     # Optional filtering by 'contains string' argument, multiple arguments are treated as a Boolean OR search
     parser.add_argument('--contains_string', nargs='+',
                         help='filter list output by \'contains string\', multiple arguments are treated as a Boolean OR search')
@@ -28,7 +28,7 @@ def main():
     args = parser.parse_args()
 
     # Get URLs into list
-    sitemap_urls = get_sitemap_urls(args.sitemap_urls)
+    sitemap_urls = get_sitemap_urls(args.sitemap_input)
 
     if args.contains_string:
         sitemap_urls = filter_contains_str(sitemap_urls, args.contains_string)
