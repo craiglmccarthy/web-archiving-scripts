@@ -66,3 +66,7 @@ optional arguments:
                         required flag when 'pywb record mode' is enabled
   --port PORT           required flag when 'pywb record mode' is enabled
 ```
+
+## xml_metadata_validation.py
+
+A tool to quickly find malformed XML .metadata files. Built to test XML .metadata files prior to ingest into Preservica.
