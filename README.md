@@ -1,6 +1,6 @@
 # web-archiving-tools
 
-A collection of tools that I've put together to help with web-archiving tasks.
+A collection of tools to help with web-archiving tasks.
 
 ## sitemap_tool.py
 
