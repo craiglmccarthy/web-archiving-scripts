@@ -48,7 +48,7 @@ def main():
 
 
 def to_html(sitemap_urls, filename):
-    """Writes XML file to a basic HTML page where each URL is a hyperlink"""
+    """Converts XML to a basic HTML where each URL is a hyperlink"""
     li_string = ''
     for url in sitemap_urls:
         li_string += f'<li><a href="{url}">{url}</a></li>\n'
