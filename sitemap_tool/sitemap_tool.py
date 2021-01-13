@@ -3,8 +3,9 @@
 
 """
 A simple tool to produce a plain list of URLs from an XML sitemap, accepts
-XML file or live sitemap URL.
-Includes basic filtering by 'contains string'.
+XML files or live sitemap URLs.
+Includes basic filtering by 'contains string'. Outputs to .txt, .html or
+terminal (default).
 """
 
 
@@ -17,14 +18,17 @@ import requests
 
 def main():
     parser = argparse.ArgumentParser(
-        description='A simple tool to produce a plain list of URLs from an XML sitemap.')
+        description='A simple tool to produce a plain list of URLs from an XML sitemap. Includes basic filtering by \'contains string\'. Outputs to .txt, .html or terminal (default).')
     # Requires at least one sitemap input (XML file or URL)
-    parser.add_argument('sitemap_input', nargs='+', help='sitemap input/s (XML file or URL)')
+    parser.add_argument('sitemap_input', nargs='+',
+                        help='sitemap input/s (XML file or URL)')
     # Optional filtering by 'contains string' argument, multiple arguments are treated as a Boolean OR search
     parser.add_argument('--contains_string', nargs='+',
                         help='filter list output by \'contains string\', multiple arguments are treated as a Boolean OR search')
     # Optional save to .txt file
     parser.add_argument('--to_file', help='file path to .txt file output')
+    # Optional save to .html file
+    parser.add_argument('--to_html', help='file path to .html file output')
     args = parser.parse_args()
 
     # Get URLs into list
@@ -33,11 +37,36 @@ def main():
     if args.contains_string:
         sitemap_urls = filter_contains_str(sitemap_urls, args.contains_string)
 
-    if args.to_file:
-        to_file(sitemap_urls, args.to_file)
+    if args.to_file or args.to_html:
+        if args.to_file:
+            to_file(sitemap_urls, args.to_file)
+        if args.to_html:
+            to_html(sitemap_urls, args.to_html)
     else:
         for i in sitemap_urls:
             print(i)
+
+
+def to_html(sitemap_urls, filename):
+    """Writes XML file to a basic HTML page where each URL is a hyperlink"""
+    li_string = ''
+    for url in sitemap_urls:
+        li_string += f'<li><a href="{url}">{url}</a></li>\n'
+    html = f'''<!DOCTYPE html>\n\
+<html lang="en">\n\
+<head>\n\
+<meta charset="UTF-8">\n\
+<meta name="viewport" content="width=device-width, initial-scale=1.0">\n\
+<title></title>\n\
+</head>\n\
+<body>\n\
+<ul>\n\
+{li_string}\
+</ul>\n\
+</body>\n\
+</html>'''
+    with open(filename, 'w') as f:
+        f.write(html)
 
 
 def get_sitemap_urls(sitemap_urls):
