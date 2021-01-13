@@ -5,9 +5,9 @@ A collection of tools that I've put together to help with web-archiving tasks.
 ## sitemap_tool.py
 
 ```
-usage: sitemap_tool.py [-h] [--contains_string CONTAINS_STRING [CONTAINS_STRING ...]] [--to_file TO_FILE] sitemap_input [sitemap_input ...]
+usage: sitemap_tool.py [-h] [--contains_string CONTAINS_STRING [CONTAINS_STRING ...]] [--to_file TO_FILE] [--to_html TO_HTML] sitemap_input [sitemap_input ...]
 
-A simple tool to produce a plain list of URLs from an XML sitemap.
+A simple tool to produce a plain list of URLs from an XML sitemap. Includes basic filtering by 'contains string'. Outputs to .txt, .html or terminal (default).
 
 positional arguments:
   sitemap_input         sitemap input/s (XML file or URL)
@@ -17,6 +17,7 @@ optional arguments:
   --contains_string CONTAINS_STRING [CONTAINS_STRING ...]
                         filter list output by 'contains string', multiple arguments are treated as a Boolean OR search
   --to_file TO_FILE     file path to .txt file output
+  --to_html TO_HTML     file path to .html file output
 ```
 
 ## get_html.py
