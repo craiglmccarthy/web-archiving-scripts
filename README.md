@@ -45,6 +45,10 @@ optional arguments:
 
 A Jupyter notebook that takes the pickle file from get_html.py. This notebook can be used to scrape the HTML content contained in the pickle file. Useful for gathering information about a website prior to web-archiving.
 
+## os_path_to_url
+
+Takes a directory of files and converts the OS filepath to a "pseudo URL". Built to "rebuild" the URL path of files/directories from a downloaded and extracted .zip file.
+
 ## browser_auto_open.py
 
 ```
