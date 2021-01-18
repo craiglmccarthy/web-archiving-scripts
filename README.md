@@ -47,7 +47,7 @@ A Jupyter notebook that takes the pickle file from get_html.py. This notebook ca
 
 ## os_path_to_url.py
 
-Takes a directory of files and converts the OS filepath to a "pseudo URL". Built to "rebuild" the URL path of files/directories from a downloaded and extracted .zip file.
+Takes a directory of files and converts the files in the directory to "pseudo" URLs. Built to rebuild the URL path of files/directories from a downloaded and extracted .zip file.
 
 ## browser_auto_open.py
 
