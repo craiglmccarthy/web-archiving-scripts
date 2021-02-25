@@ -21,6 +21,9 @@ def main():
     # Optional print list to terminal
     parser.add_argument('--terminal_out',
                         action='store_true', help='print list to terminal')
+    # Optional argument to convert to URL format
+    parser.add_argument(
+        '--convert_to_url_format', action='store_true', help='argument to convert to URL format')
     # Optional argument to replace root directory with a string
     parser.add_argument(
         '--replace_root', help='argument to replace root directory with a string - i.e. with example.com/')
@@ -32,6 +35,9 @@ def main():
                         action='store_true', help='removes file extension')
     # Optional argument to write results to file
     parser.add_argument('--to_file', help='name of output .txt file')
+    # Optional list of file formats to replace with ashx
+    parser.add_argument('--file_ext_replace', nargs='+',
+                        help='file extensions to be replaced by .ashx')
     args = parser.parse_args()
 
     file_list = []
@@ -41,18 +47,23 @@ def main():
         for file in f:
             # Create entire path
             file = os.path.join(r, file)
+            # Append file extensions to set
             if args.unique_file_exts:
-                # Append file extensions to set
                 file_ext_set.add(os.path.splitext(file)[1])
+            # Strip the file extension
             if args.remove_file_ext:
-                # Strip the file extension
                 file = os.path.splitext(file)[0]
+            # Replace start of os path with HTTP/s location
             if args.replace_root:
-                # Replace start of os path with HTTP/s location
                 file = file.replace(args.os_path, args.replace_root)
             # Replace %20 with -; replace backslash with forward; to lowercase
-            file = file.replace(
-                '%20', '-').replace("\\", "/").lower()
+            if args.convert_to_url_format:
+                file = file.replace(
+                    '%20', '-').replace("\\", "/").lower()
+            # Replace file extension with ashx
+            if args.file_ext_replace:
+                if any(i.lower() in os.path.splitext(file)[1].lower() for i in args.file_ext_replace):
+                    file = os.path.splitext(file)[0] + '.ashx'
             file_list.append(file)
 
     if args.terminal_out:
