@@ -3,7 +3,7 @@
 
 """
 Takes a directory of files and converts the files in the directory to "pseudo"
-URLs or prints the list of files (default).
+URLs or prints the list of files.
 
 Written to "rebuild" the URL path of files/directories from a downloaded and
 extracted .zip file.
