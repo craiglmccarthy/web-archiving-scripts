@@ -2,8 +2,9 @@
 # -*- coding: utf-8 -*-
 
 """
-Tool to read an Excel spreadsheet and output .metadata XML files that conform to 
-Preservica's metadata input. Template Excel file is included in rep.
+Tool to read an Excel spreadsheet and output .metadata XML files that conform 
+to Preservica's metadata input. Template Excel file is included in rep.
+Columns are customizable and repeatable.
 """
 
 import os.path
