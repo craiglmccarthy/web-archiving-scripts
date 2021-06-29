@@ -24,6 +24,6 @@ for r, d, f in os.walk(directory):
         if file.endswith(".metadata"):
             try:
                 if my_schema.is_valid(os.path.join(r, file)):
-                    print(f'{os.path.join(r, file)} is OK')
+                    print(f'OK - {os.path.join(r, file)}')
             except Exception as e:
-                print(f'{os.path.join(r, file)} is NOT VALID - {e}')
+                print(f'NOT VALID - {os.path.join(r, file)} - {e}')
