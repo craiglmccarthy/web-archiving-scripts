@@ -14,7 +14,7 @@ import pandas as pd
 
 
 def main():
-    excel_file = input('Enter dir path to Excel file: ').strip().strip("'\"")
+    excel_file = input('Enter path to Excel file: ').strip().strip("'\"")
     # keep_default_na stops empty cells appearing as 'nan' string
     # includes some extra code to get around pandas not allowing duplicate
     # headers, answer found here - https://github.com/pandas-dev/pandas/issues/19383
@@ -39,14 +39,16 @@ def main():
         file_content_dict[df.iloc[i, 0]] = xml_complete
 
     # create path if it doesn't exist
-    if not os.path.isdir('XML metadata'):
-        os.mkdir('XML metadata')
+    if not os.path.isdir('xml-metadata'):
+        os.mkdir('xml-metadata')
 
     # write files
     for filename, content in file_content_dict.items():
-        with open(os.path.join('XML metadata', f'{filename}.metadata'), 'w') as f:
+        with open(os.path.join('xml-metadata', f'{filename}.metadata'), 'w') as f:
             f.write(content)
 
+    print(f'Finished writing {len(file_content_dict)} .metadata files!')
+    input()
 
 if __name__ == '__main__':
     main()
