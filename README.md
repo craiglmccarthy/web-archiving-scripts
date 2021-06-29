@@ -25,6 +25,10 @@ optional arguments:
   --port PORT           required flag when 'pywb record mode' is enabled
 ```
 
+## excel2dc.py
+
+Tool to read an Excel spreadsheet and output .metadata XML files that conform to Preservica's metadata input. Template Excel file is included in rep. Columns are customizable and repeatable.
+
 ## get_html.py
 
 ```
