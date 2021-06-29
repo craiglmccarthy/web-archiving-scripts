@@ -54,6 +54,10 @@ optional arguments:
 
 Takes a directory of files and converts the files in the directory to "pseudo" URLs. Built to rebuild the URL path of files/directories from a downloaded and extracted .zip file.
 
+## pdf_decrypt.py
+
+Simple tool to decrypt a folder of PDFs using pikepdf.
+
 ## sitemap_tool.py
 
 ```
@@ -80,11 +84,12 @@ The notebook reads the WARC files and determines which URLs are present/missing 
 The notebook also reads the HTML content of the URLs specified to find problematic elements in the WARC files.
 
 It is currently configured to find the following elements for a recurring web crawl -
- - \<title>Error response\</title>
- - \<section class="securing-warning"> and \<div id="restricted">
- - \<div class="more-link">
- - \<div class="tab-placeholder">
- - \<div class="c-filter--dynamic">
+
+- \<title>Error response\</title>
+- \<section class="securing-warning"> and \<div id="restricted">
+- \<div class="more-link">
+- \<div class="tab-placeholder">
+- \<div class="c-filter--dynamic">
 
 ## web-scrape.ipynb
 
