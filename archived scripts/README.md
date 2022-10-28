@@ -1,7 +1,3 @@
-# web-archiving-tools
-
-A collection of tools to help with various web-archiving tasks.
-
 ## browser_auto_open.py
 
 ```
