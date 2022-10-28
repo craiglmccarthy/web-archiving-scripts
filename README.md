@@ -1,6 +1,6 @@
 # web-archiving-scripts
 
-A collection of tools to help with various web-archiving tasks.
+A collection of scripts to help with various web-archiving tasks.
 
 ## archived scripts
 
