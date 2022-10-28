@@ -1,100 +1,23 @@
-# web-archiving-tools
+# web-archiving-scripts
 
 A collection of tools to help with various web-archiving tasks.
 
-## browser_auto_open.py
+## archived scripts
 
-```
-usage: browser_auto_open.py [-h] (--chrome | --firefox) [--file_start FILE_START] [--file_end FILE_END] [--pywb] [--collection COLLECTION] [--port PORT] url_list
+Contains various scripts for ad-hoc tasks that may or may not be repeated in the future.
 
-A tool that opens multiple URLs in a browser from a list of URLs supplied via .txt file. Built to be used in conjunction with Python Wayback (PyWb) in record mode.
+## downloading items from the internet archive
 
-positional arguments:
-  url_list              .txt file containing list of URLs
+Contains a script to reformat the json response from the Internet Archive's CDX API and provides better duplicate removal. Outputs to a .txt file.
 
-optional arguments:
-  -h, --help            show this help message and exit
-  --chrome              mutually exclusive argument, either --chrome or--firefox flags must be provided
-  --firefox             mutually exclusive argument, either --chrome or--firefox flags must be provided
-  --file_start FILE_START
-                        start point of .txt file to read
-  --file_end FILE_END   end point of .txt file to read
-  --pywb                this flag enables 'pywb record mode' and builds/opens URLs in the form of localhost:{PORT}/{COLLECTION}/record/{URL}
-  --collection COLLECTION
-                        required flag when 'pywb record mode' is enabled
-  --port PORT           required flag when 'pywb record mode' is enabled
-```
+## pdf decrypt
 
-## excel2dc.py
+Contains a script to decrypt a folder of PDFs using pikepdf.
 
-Tool to read an Excel spreadsheet and output .metadata XML files that conform to Preservica's metadata input. Template Excel file is included in rep. Columns are customizable and repeatable.
+## sitemap tools
 
-## get_html.py
-
-```
-usage: get_html.py [-h] [--authenticate] [--file_start FILE_START] [--file_end FILE_END] [--to_json TO_JSON] [--to_pickle TO_PICKLE] url_list
-
-A tool which visits a list of URLs and saves the HTML content to a Python dictionary. Outputs to json, pickle or terminal (default).
-
-positional arguments:
-  url_list              .txt file containing list of URLs to visit
-
-optional arguments:
-  -h, --help            show this help message and exit
-  --authenticate        gives option to provide authentication credentials
-  --file_start FILE_START
-                        start point of .txt file to read
-  --file_end FILE_END   end point of .txt file to read
-  --to_json TO_JSON     file path to .json file output
-  --to_pickle TO_PICKLE
-                        file path to .pkl file output
-```
-
-## os_path_to_url.py
-
-Takes a directory of files and converts the files in the directory to "pseudo" URLs. Built to rebuild the URL path of files/directories from a downloaded and extracted .zip file.
-
-## pdf_decrypt.py
-
-Simple tool to decrypt a folder of PDFs using pikepdf.
-
-## sitemap_tool.py
-
-```
-usage: sitemap_tool.py [-h] [--contains_string CONTAINS_STRING [CONTAINS_STRING ...]] [--to_file TO_FILE] [--to_html TO_HTML] sitemap_input [sitemap_input ...]
-
-A simple tool to produce a plain list of URLs from an XML sitemap. Includes basic filtering by 'contains string'. Outputs to .txt, .html or terminal (default).
-
-positional arguments:
-  sitemap_input         sitemap input/s (XML file or URL)
-
-optional arguments:
-  -h, --help            show this help message and exit
-  --contains_string CONTAINS_STRING [CONTAINS_STRING ...]
-                        filter list output by 'contains string', multiple arguments are treated as a Boolean OR search
-  --to_file TO_FILE     file path to .txt file output
-  --to_html TO_HTML     file path to .html file output
-```
+Contains two scripts. One script produces a plain list of URLs from an XML sitemap (outputs to .txt, .html, or terminal). One script creates a HTML list from a text file input.
 
 ## warc_reader.ipynb
 
-A Jupyter notebook that takes a WARC file/collection of WARC files and a list of URLs supplied via .txt file.
-
-The notebook reads the WARC files and determines which URLs are present/missing as specified by the URL list.
-The notebook also reads the HTML content of the URLs specified to find problematic elements in the WARC files.
-
-It is currently configured to find the following elements for a recurring web crawl -
-
-- \<title>Error response\</title>
-- \<section class="securing-warning"> and \<div id="restricted">
-- \<div class="more-link">
-- \<div class="tab-placeholder">
-- \<div class="c-filter--dynamic">
-
-## web-scrape.ipynb
-
-A Jupyter notebook that takes the pickle file from get_html.py. This notebook can be used to scrape the HTML content contained in the pickle file. Useful for gathering information about a website prior to web-archiving.
-
-## xml_metadata_validation.py
-
-A tool to quickly find malformed XML .metadata files. Built to test XML .metadata files prior to ingest into Preservica.
+A Jupyter notebook that takes a WARC file/collection of WARC files and a list of URLs supplied via .txt file. It then reads the WARC files and determines which URLs are present/missing as specified by the URL list. It also reads and scrapes the HTML content of the URLs specified to search for specific elements in the WARC files.
