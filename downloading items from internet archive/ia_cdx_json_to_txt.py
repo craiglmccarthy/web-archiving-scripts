@@ -5,6 +5,7 @@
 This script produces wget requestable URLs from the json file output from the CDX Internet Archive API. It also allows for better duplicate removal based on digests compared with the standard API filter/collapse option.
 For example it will convert this json object into a Wayback Machine URL: 
 ["com,spacejam)/", "19961227161755", "http://spacejam.com:80/", "text/html", "200", "A6NF77CKEPAV6LT6P4P7UBUGA5DHCC54", "495"]
+to
 https://web.archive.org/web/19961227161755if_/http://spacejam.com:80/
 
 The CDX Internet Archive API is explained here: https://github.com/internetarchive/wayback/tree/master/wayback-cdx-server
