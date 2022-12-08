@@ -19,6 +19,8 @@ PASSWORD = os.getenv('PASSWORD')
 TENANT = os.getenv('TENANT')
 SERVER = os.getenv('SERVER')
 
+CSV_OUTPUT_FILENAME = 'preservica_assets-trs.csv'
+
 client = EntityAPI(username=USERNAME,
                    password=PASSWORD, tenant=TENANT, server=SERVER)
 
@@ -27,14 +29,14 @@ root_folder_references = []
 for entity in client.descendants():
     root_folder_references.append(entity.reference)
 
-with open('preservica_assets-trs.csv', 'w', encoding='UTF8', newline='') as f:
+with open(CSV_OUTPUT_FILENAME, 'w', encoding='UTF8', newline='') as f:
     writer = csv.writer(f, delimiter=',', quotechar='"',
                         quoting=csv.QUOTE_MINIMAL)
     writer.writerow(['Filepath', 'Asset Reference', 'Content Reference',
                     'Filesize (bytes)', 'Date', 'Security tag'])
 
-    # leave argument empty for root folder
-    for e in client.all_descendants("9ba88286-6b51-47aa-a265-c782bd2ff286"):
+    # Leave argument empty for root folder
+    for e in client.all_descendants("ce1a24c4-9e9e-45b2-b9ad-f3fb748423a2"):
 
         e = client.entity(e.entity_type, e.reference)
         print(e.title)
@@ -52,7 +54,7 @@ with open('preservica_assets-trs.csv', 'w', encoding='UTF8', newline='') as f:
                 folder = client.folder(folder.parent)
                 filepath_string.insert(0, folder.title + '/')
 
-            # comment out to remove folders from output
+            # Comment out to remove folders from output
             if str(e.entity_type) == 'EntityType.FOLDER':
                 writer.writerow(
                     [''.join(filepath_string) + e.title, e.reference, '', '', '', e.security_tag])
