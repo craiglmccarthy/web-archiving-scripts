@@ -20,7 +20,8 @@ PASSWORD = os.getenv('PASSWORD')
 TENANT = os.getenv('TENANT')
 SERVER = os.getenv('SERVER')
 
-FOLDER_REF = "5db21e22-1f33-48b5-88c1-a74adbdfe264"
+FOLDER_REF = '5db21e22-1f33-48b5-88c1-a74adbdfe264'
+CSV_OUTPUT_FILENAME = 'dublincore.csv'
 
 client = EntityAPI(username=USERNAME,
                    password=PASSWORD, tenant=TENANT, server=SERVER)
@@ -34,7 +35,7 @@ header = ['assetId', 'entity type', 'file extension', 'title', 'dc:title',
           'dc:source', 'dc:language', 'dc:relation', 'dc:coverage', 'dc:rights']
 
 # Write CSV file
-with open('dublincore.csv', 'w', encoding='UTF8', newline='') as f:
+with open(CSV_OUTPUT_FILENAME, 'w', encoding='UTF8', newline='') as f:
     writer = csv.writer(f, delimiter=',', quotechar='"',
                         quoting=csv.QUOTE_MINIMAL)
     # Write header
