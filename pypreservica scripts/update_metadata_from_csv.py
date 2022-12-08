@@ -21,15 +21,17 @@ PASSWORD = os.getenv('PASSWORD')
 TENANT = os.getenv('TENANT')
 SERVER = os.getenv('SERVER')
 
-OAI_DC = "http://www.openarchives.org/OAI/2.0/oai_dc/"
-DC = "http://purl.org/dc/elements/1.1/"
-XSI = "http://www.w3.org/2001/XMLSchema-instance"
+OAI_DC = 'http://www.openarchives.org/OAI/2.0/oai_dc/'
+DC = 'http://purl.org/dc/elements/1.1/'
+XSI = 'http://www.w3.org/2001/XMLSchema-instance'
+
+CSV_INPUT_FILENAME = 'dublincore.csv'
 
 entity = EntityAPI(username=USERNAME,
                    password=PASSWORD, tenant=TENANT, server=SERVER)
 
 headers = list()
-with open('dublincore.csv', encoding='utf-8-sig', newline='') as csvfile:
+with open(CSV_INPUT_FILENAME, encoding='utf-8-sig', newline='') as csvfile:
     reader = csv.reader(csvfile)
     for row in reader:
         for header in row:
