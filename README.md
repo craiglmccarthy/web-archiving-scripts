@@ -10,7 +10,7 @@ Contains various scripts for ad-hoc tasks that may or may not be repeated in the
 
 Currently contains a custom defaultDriver.js file to automate web crawl behaviours for ICAEW.com
 
-## downloading items from the internet archive
+## downloading items from the Internet Archive
 
 Contains a script to reformat the json response from the Internet Archive's CDX API and provides better duplicate removal. Outputs to a .txt file.
 
