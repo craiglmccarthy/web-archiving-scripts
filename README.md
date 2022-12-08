@@ -18,6 +18,10 @@ Contains a script to reformat the json response from the Internet Archive's CDX 
 
 Contains a script to decrypt a folder of PDFs using pikepdf.
 
+## pypreservica scripts
+
+Contains various scripts that utilise Preservica's API using pyPreservica.
+
 ## sitemap tools
 
 Contains two scripts. One script produces a plain list of URLs from an XML sitemap (outputs to .txt, .html, or terminal). One script creates a HTML list from a text file input.
