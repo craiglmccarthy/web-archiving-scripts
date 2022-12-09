@@ -7,6 +7,7 @@ Rough script to get a report of assets in Preservica.
 
 import csv
 import os
+import xml.etree.ElementTree as ET
 
 from dotenv import load_dotenv
 from pyPreservica import *
@@ -19,7 +20,7 @@ PASSWORD = os.getenv('PASSWORD')
 TENANT = os.getenv('TENANT')
 SERVER = os.getenv('SERVER')
 
-CSV_OUTPUT_FILENAME = 'preservica_assets-trs.csv'
+CSV_OUTPUT_FILENAME = 'preservica_assets.csv'
 
 client = EntityAPI(username=USERNAME,
                    password=PASSWORD, tenant=TENANT, server=SERVER)
@@ -33,20 +34,15 @@ with open(CSV_OUTPUT_FILENAME, 'w', encoding='UTF8', newline='') as f:
     writer = csv.writer(f, delimiter=',', quotechar='"',
                         quoting=csv.QUOTE_MINIMAL)
     writer.writerow(['Filepath', 'Asset Reference', 'Content Reference',
-                    'Filesize (bytes)', 'Date', 'Security tag'])
+                    'Filesize (bytes)', 'Date', 'Security tag', 'Title (Metadata)'])
 
     # Leave argument empty for root folder
-    for e in client.all_descendants("ce1a24c4-9e9e-45b2-b9ad-f3fb748423a2"):
+    # Filter can be applied via: for asset in filter(only_assets, client.all_descendants()):
+    for e in client.all_descendants('83d5a7d0-47a5-46ce-b1f7-21f9a6a2ff0c'):
 
-        e = client.entity(e.entity_type, e.reference)
-        print(e.title)
-        # print(e.reference)
-        # print(e.parent)
-        # print(folder.reference)
-        # print(folder.title)
+        print(e)  # Print folder/asset details
 
         if e.parent != None:  # Gets around calling e.parent etc. on root implied root reference in all_descendants()
-
             filepath_string = []
             folder = client.folder(e.parent)
             filepath_string.insert(0, folder.title + '/')
@@ -56,10 +52,30 @@ with open(CSV_OUTPUT_FILENAME, 'w', encoding='UTF8', newline='') as f:
 
             # Comment out to remove folders from output
             if str(e.entity_type) == 'EntityType.FOLDER':
+                # Get Title from metadata
+                folder = client.folder(e.reference)
+                for url, schema in folder.metadata.items():
+                    # Search the http://www.openarchives.org/OAI/2.0/oai_dc/ schema only
+                    if schema == 'http://www.openarchives.org/OAI/2.0/oai_dc/':
+                        root = ET.fromstring(client.metadata(url))
+                        metadata_title = root[0].text  # Title field
+                    else:
+                        metadata_title = ''
                 writer.writerow(
-                    [''.join(filepath_string) + e.title, e.reference, '', '', '', e.security_tag])
+                    [''.join(filepath_string) + folder.title, folder.reference, '', '', '', folder.security_tag, metadata_title])
 
+            # Comment out to remove assets from output
             if str(e.entity_type) == 'EntityType.ASSET':
+                # Get Title from metadata
+                asset = client.asset(e.reference)
+                for url, schema in asset.metadata.items():
+                    # Search the http://www.openarchives.org/OAI/2.0/oai_dc/ schema only
+                    if schema == 'http://www.openarchives.org/OAI/2.0/oai_dc/':
+                        root = ET.fromstring(client.metadata(url))
+                        metadata_title = root[0].text  # Title field
+                    else:
+                        metadata_title = ''
+
                 for representation in client.representations(e):
                     # print(representation.rep_type)
                     # print(representation.name)
@@ -86,38 +102,4 @@ with open(CSV_OUTPUT_FILENAME, 'w', encoding='UTF8', newline='') as f:
                             # print('SIZE:', generation.bitstreams[0].length)
                             # print('DATE:', generation.effective_date)
                             writer.writerow([''.join(filepath_string) + generation.bitstreams[0].filename, e.reference, generation.content_object.reference, str(
-                                generation.bitstreams[0].length), generation.effective_date, generation.content_object.security_tag])
-
-
-# for asset in filter(only_assets, client.all_descendants()):
-#     e = client.entity(asset.entity_type, asset.reference)
-
-#     for representation in client.representations(asset):
-#         print('\nREPRESENTATION:')
-#         # print(representation.rep_type)
-#         # print(representation.name)
-#         print(representation.asset.title)
-
-#         for content_object in client.content_objects(representation):
-#             print('\nCONTENT:')
-#             print(content_object.reference)
-#             print(content_object.title)
-#             # print(content_object.description)
-#             print(content_object.parent)
-#             # print(content_object.metadata)
-#             print(content_object.asset.title)
-
-#             for generation in client.generations(content_object):
-#                 print('\nGENERATION:')
-#                 # print(generation.original)
-#                 # print(generation.active)
-#                 print(generation.content_object)
-#                 print(generation.format_group)
-#                 print(generation.effective_date)
-#                 print(generation.bitstreams)
-#                 print(generation.bitstreams[0].length, 'bytes')
-
-#     # print(e.reference, e.title, e.security_tag,
-#     #       f'https://icaew.access.preservica.com/index.php/IO_{e.reference}/')
-#     # preservica_assets.writerow([e.reference, e.title, e.security_tag,
-#     #                            f'https://icaew.access.preservica.com/index.php/IO_{e.reference}/'])
+                                generation.bitstreams[0].length), generation.effective_date, generation.content_object.security_tag, metadata_title])
