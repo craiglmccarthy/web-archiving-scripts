@@ -2,7 +2,8 @@
 # -*- coding: utf-8 -*-
 
 """
-Rough script to get a report of assets in Preservica.
+This script outputs information regarding Preservica assets below a specified folder reference to a CSV file.
+The CSV file contains the following fields: Folder/Asset path, entity.title, entity.reference, entity.entity_type, entity.security_tag, Dublin Core Metadata (Title).
 """
 
 import csv
@@ -20,98 +21,66 @@ PASSWORD = os.getenv('PASSWORD')
 TENANT = os.getenv('TENANT')
 SERVER = os.getenv('SERVER')
 
-CSV_OUTPUT_FILENAME = 'preservica_assets.csv'
-
 client = EntityAPI(username=USERNAME,
                    password=PASSWORD, tenant=TENANT, server=SERVER)
 
-# Get root folders
-root_folder_references = []
-for entity in client.descendants():
-    root_folder_references.append(entity.reference)
+CSV_OUTPUT_FILENAME = 'testing3.csv'
+# PARENT_FOLDER_REF: None for root, or a specific folder reference number such as - 'a9c9fa31-4842-4ff3-9dad-d0ae2fbe6c28'
+PARENT_FOLDER_REF = None
 
-with open(CSV_OUTPUT_FILENAME, 'w', encoding='UTF8', newline='') as f:
-    writer = csv.writer(f, delimiter=',', quotechar='"',
-                        quoting=csv.QUOTE_MINIMAL)
-    writer.writerow(['Filepath', 'Asset Reference', 'Content Reference',
-                    'Filesize (bytes)', 'Date', 'Security tag', 'Title (Metadata)'])
 
-    # Leave argument empty for root folder
-    # Filter can be applied via: for asset in filter(only_assets, client.all_descendants()):
-    for entity in client.all_descendants():
+def main():
 
-        # print(e)  # Print folder/asset details
+    with open(CSV_OUTPUT_FILENAME, 'w', encoding='UTF8', newline='') as f:
+        writer = csv.writer(f, delimiter=',', quotechar='"',
+                            quoting=csv.QUOTE_MINIMAL)
+        writer.writerow(['Folder/Asset path', 'entity.title', 'entity.reference',
+                        'entity.entity_type', 'entity.security_tag', 'Dublin Core Metadata (Title)'])
 
-        if entity.parent != None:  # Gets around calling entity.parent etc. on root implied root reference in all_descendants()
-            filepath_string = []
-            folder = client.folder(entity.parent)
-            filepath_string.insert(0, folder.title + '/')
-            while folder.reference not in root_folder_references:  # Get parent folders recursively to the root
-                folder = client.folder(folder.parent)
-                filepath_string.insert(0, folder.title + '/')
+        # Filter can be applied via: for asset in filter(only_assets, client.all_descendants()):
+        for entity in client.all_descendants(PARENT_FOLDER_REF):
 
-            # Comment out to remove folders from output
+            # Create directory path to root
+            if entity.parent != None:  # Gets around calling entity.parent etc. on root implied root reference in all_descendants()
+                folderpath = []
+                folder = client.folder(entity.parent)
+                folderpath.insert(0, folder.title + '/')
+                while folder.parent != None:
+                    folder = client.folder(folder.parent)
+                    folderpath.insert(0, folder.title + '/')
+                folder_and_assetpath = ''.join(folderpath) + entity.title
+            else:
+                folder_and_assetpath = entity.title
+            print(folder_and_assetpath)
+
+            # Folder logic
             if str(entity.entity_type) == 'EntityType.FOLDER':
-                # Get Title from metadata
-                folder = client.folder(entity.reference)
-                for url, schema in folder.metadata.items():
-                    # Search the http://www.openarchives.org/OAI/2.0/oai_dc/ schema only
+                asset = client.folder(entity.reference)
+                security_tag = asset.security_tag
+                for metadata in client.all_metadata(asset):
+                    schema = metadata[0]
                     if schema == 'http://www.openarchives.org/OAI/2.0/oai_dc/':
-                        root = ET.fromstring(client.metadata(url))
-                        try:
-                            metadata_title = root[0].text  # Title field
-                        except Exception as e:
-                            metadata_title = ''
-                            print(e, folder.title)
+                        xml_string = metadata[1]
+                        root = ET.fromstring(xml_string)
+                        title_metadata = root[0].text
                     else:
-                        metadata_title = ''
-                writer.writerow(
-                    [''.join(filepath_string) + folder.title, folder.reference, '', '', '', folder.security_tag, metadata_title])
+                        title_metadata = ''
 
-            # Comment out to remove assets from output
+            # Asset logic
             if str(entity.entity_type) == 'EntityType.ASSET':
-                # Get Title from metadata
                 asset = client.asset(entity.reference)
-                for url, schema in asset.metadata.items():
-                    # Search the http://www.openarchives.org/OAI/2.0/oai_dc/ schema only
+                security_tag = asset.security_tag
+                for metadata in client.all_metadata(asset):
+                    schema = metadata[0]
                     if schema == 'http://www.openarchives.org/OAI/2.0/oai_dc/':
-                        root = ET.fromstring(client.metadata(url))
-                        try:
-                            metadata_title = root[0].text  # Title field
-                        except Exception as e:
-                            metadata_title = ''
-                            print(e, asset.title)
+                        xml_string = metadata[1]
+                        root = ET.fromstring(xml_string)
+                        title_metadata = root[0].text
                     else:
-                        metadata_title = ''
+                        title_metadata = ''
 
-                for representation in client.representations(entity):
-                    # print(representation.rep_type)
-                    # print(representation.name)
-                    # print(representation.asset.title)
+            writer.writerow([folder_and_assetpath, entity.title, entity.reference, entity.entity_type, security_tag, title_metadata])
 
-                    for content_object in client.content_objects(representation):
-                        # print(content_object.reference)
-                        # print(content_object.title)
-                        # print(content_object.description)
-                        # print(content_object.parent)
-                        # print(content_object.metadata)
-                        # print(content_object.asset.title)
 
-                        try:
-                            for generation in client.generations(content_object):
-                                # print('GENERATION:')
-                                # print(generation.original)
-                                # print(generation.active)
-                                # print(generation.content_object)
-                                # print(generation.format_group)
-                                # print(generation.effective_date)
-                                # print(generation.bitstreams)
-                                # print(generation.bitstreams[0].length, 'bytes')
-                                # print('FILEPATH:', ''.join(filepath_string) + generation.bitstreams[0].filename)
-                                # print('SIZE:', generation.bitstreams[0].length)
-                                # print('DATE:', generation.effective_date)
-                                writer.writerow([''.join(filepath_string) + generation.bitstreams[0].filename, entity.reference, generation.content_object.reference, str(
-                                    generation.bitstreams[0].length), generation.effective_date, generation.content_object.security_tag, metadata_title])
-                        except Exception as e:
-                            print(e)
-                            writer.writerow([asset.title, 'ERROR', 'ERROR', 'ERROR', 'ERROR', 'ERROR', 'ERROR'])
+if __name__ == "__main__":
+    main()
