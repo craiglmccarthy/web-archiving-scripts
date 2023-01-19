@@ -25,6 +25,9 @@ def main():
     # Optional filtering by 'contains string' argument, multiple arguments are treated as a Boolean OR search
     parser.add_argument('--contains_string', nargs='+',
                         help='filter list output by \'contains string\', multiple arguments are treated as a Boolean OR search')
+    # Optional filtering, exclude strings from output, multiple arguments are treated as a Boolean AND search
+    parser.add_argument('--exclude_string', nargs='+',
+                        help='exclude strings from output, multiple arguments are treated as a Boolean AND search')
     # Optional save to .txt file
     parser.add_argument('--to_file', help='file path to .txt file output')
     # Optional save to .html file
@@ -36,6 +39,9 @@ def main():
 
     if args.contains_string:
         sitemap_urls = filter_contains_str(sitemap_urls, args.contains_string)
+
+    if args.exclude_string:
+        sitemap_urls = exclude_string(sitemap_urls, args.exclude_string)
 
     if args.to_file or args.to_html:
         if args.to_file:
@@ -97,6 +103,15 @@ def filter_contains_str(sitemap_urls, contains_string):
                 filtered.add(url)
     # Sort the set after building set
     filtered = sorted(filtered)
+    return filtered
+
+
+def exclude_string(sitemap_urls, exclude_string):
+    """"Filter strings from sitemap based on exclude strings"""
+    filtered = []
+    for url in sitemap_urls:
+        if not any(map(url.__contains__, exclude_string)):
+            filtered.append(url)
     return filtered
 
 
