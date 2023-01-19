@@ -4,7 +4,7 @@
 """
 A simple tool to produce a plain list of URLs from an XML sitemap, accepts
 XML files or live sitemap URLs.
-Includes basic filtering by 'contains string'. Outputs to .txt, .html or
+Includes basic filtering by 'contains strings' and 'exclude strings'. Outputs to .txt, .html or
 terminal (default).
 """
 
@@ -23,10 +23,10 @@ def main():
     parser.add_argument('sitemap_input', nargs='+',
                         help='sitemap input/s (XML file or URL)')
     # Optional filtering by 'contains string' argument, multiple arguments are treated as a Boolean OR search
-    parser.add_argument('--contains_string', nargs='+',
+    parser.add_argument('--contains_strings', nargs='+',
                         help='filter list output by \'contains string\', multiple arguments are treated as a Boolean OR search')
     # Optional filtering, exclude strings from output, multiple arguments are treated as a Boolean AND search
-    parser.add_argument('--exclude_string', nargs='+',
+    parser.add_argument('--exclude_strings', nargs='+',
                         help='exclude strings from output, multiple arguments are treated as a Boolean AND search')
     # Optional save to .txt file
     parser.add_argument('--to_file', help='file path to .txt file output')
@@ -37,11 +37,11 @@ def main():
     # Get URLs into list
     sitemap_urls = get_sitemap_urls(args.sitemap_input)
 
-    if args.contains_string:
-        sitemap_urls = filter_contains_str(sitemap_urls, args.contains_string)
+    if args.contains_strings:
+        sitemap_urls = filter_contains_str(sitemap_urls, args.contains_strings)
 
-    if args.exclude_string:
-        sitemap_urls = exclude_string(sitemap_urls, args.exclude_string)
+    if args.exclude_strings:
+        sitemap_urls = filter_exclude_str(sitemap_urls, args.exclude_strings)
 
     if args.to_file or args.to_html:
         if args.to_file:
@@ -106,7 +106,7 @@ def filter_contains_str(sitemap_urls, contains_string):
     return filtered
 
 
-def exclude_string(sitemap_urls, exclude_string):
+def filter_exclude_str(sitemap_urls, exclude_string):
     """"Filter strings from sitemap based on exclude strings"""
     filtered = []
     for url in sitemap_urls:
