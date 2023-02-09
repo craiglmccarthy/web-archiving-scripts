@@ -8,7 +8,7 @@ Contains various scripts for ad-hoc tasks that may or may not be repeated in the
 
 ## browsertrix-crawler files
 
-Currently contains a custom defaultDriver.js file to automate web crawl behaviours for ICAEW.com
+Contains scripts relating to browsertrix-crawler
 
 ## downloading items from the Internet Archive
 
@@ -26,6 +26,6 @@ Contains various scripts that utilise Preservica's API using pyPreservica.
 
 Contains two scripts. One script produces a plain list of URLs from an XML sitemap (outputs to .txt, .html, or terminal). One script creates a HTML list from a text file input.
 
-## warc_reader.ipynb
+## warc_reader.py
 
-A Jupyter notebook that takes a WARC file/collection of WARC files and a list of URLs supplied via .txt file. It then reads the WARC files and determines which URLs are present/missing as specified by the URL list. It also reads and scrapes the HTML content of the URLs specified to search for specific elements in the WARC files.
+A script which reads a folder of WARC files and cross-references the content with a list of URLs. It also uses BS4 to search the HTML content for specific HTML elements.
