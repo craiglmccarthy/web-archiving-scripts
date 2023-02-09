@@ -15,11 +15,11 @@ from tqdm import tqdm
 from warcio.archiveiterator import ArchiveIterator
 
 # URL_LIST is most likely going to be a sitemap 'snapshot'
-URL_LIST = '/media/craigm/Elements/browsertrix-crawler/20230206-sitemap.txt'
+URL_LIST = ''
 # WARC_FOLDER_PATH is a path to a folder containing WARC files
-WARC_FOLDER_PATH = '/media/craigm/Elements/browsertrix-crawler/crawls/collections/icaew-com-logged-in/icaew-com-logged-in'
+WARC_FOLDER_PATH = ''
 # CSV_FILENAME is the filename for the CSV output
-CSV_FILENAME = 'crawl_report_20230206.csv'
+CSV_FILENAME = ''
 
 
 def read_file(url_list):
