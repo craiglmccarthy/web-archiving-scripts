@@ -39,12 +39,12 @@ def read_file(checksum_list):
 
 def main():
 
-    PRESERVICA_CHECKSUM_FILE = '/home/digital-archivist/Documents/custom scripts/web-archiving-scripts/test_files/checksum-out-preservica-warcs.txt'
+    PRESERVICA_CHECKSUM_FILE = '/home/digital-archivist/Documents/custom scripts/web-archiving-scripts/test_files/files-not-present-in-preservica.txt'
     ARCHIVE_IT_CHECKSUM_FILE = '/home/digital-archivist/Documents/custom scripts/web-archiving-scripts/test_files/manifest-md5.txt'
 
-    preservica_checksums = [x[:32]
+    preservica_checksums = [x[:32].lower()
                             for x in read_file(PRESERVICA_CHECKSUM_FILE)]
-    archive_it_checksums = [x[:32]
+    archive_it_checksums = [x[:32].lower()
                             for x in read_file(ARCHIVE_IT_CHECKSUM_FILE)]
 
     # Determine missing checksums from Preservica
